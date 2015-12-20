@@ -19,6 +19,8 @@ date: 2015-12-19 13:17:00
 >4. 配置博客
 >5. 部署博客
 
+<!--more-->
+
 在开始介绍步骤之前，先扯几句Hexo、Github Pages的东西（我也不是完全了解，只是我的理解，如果哪里错了，还请指出）  Github Pages是Github提供的一个静态网站的功能，可以根据在Github仓库的HTML、CSS、js文件生成一个网站，然后提供一个二级域名，可以直接访问。这里说的静态网站，就是所有的页面的HTML页面都是静态的、已经生成好的，而不是动态生成的。   
 Github Pages使用的是已经生成好的HTML，如果我们自己手动写HTML会累死的，所以就需要使用工具来生成。搭配Github Pages的比较不错的工具有jekyll、Hexo等，查了一下资料说jekyll比较复杂，Hexo比较简单，最后选择了后者。
 
@@ -57,11 +59,11 @@ hexo server
 这里主要配置主题、评论插件多说、RSS、域名。  
 我使用的主题是jacman，详细的介绍在[这篇文章](http://wuchong.me/jacman/2014/11/20/how-to-use-jacman/)已经介绍了，我这里只是说了一下我自己配置过程中的一些注意的地方。我的博客的源文件也已经开源了，如果有不明白的地方可以下载看一下，地址<https://github.com/mengxiangyue/mengxiangyue-blog>   
 每个配置项的后面留一个空格，然后再写配置的值，如下"首页:"与后面的"/"之间要留一个空格，否则会出现问题。
-```
+```shell
 首页: /
 ```
 如果一个配置项目包含多个子项目，子项目起始位置要留空格，如下：
-```
+```shell
 imglogo:
   enable: true  
   src: img/logo.png
@@ -72,17 +74,17 @@ imglogo:
 #### 配置多说插件
 注册多说（<http://duoshuo.com/>）账户，然后添加站点，按照自己的要求填写信息。![](/images/2015.12.19.04.png)  
 右上角点击你新建的使用多说的配置站点，然后看浏览器地址栏的地址，如果出现admin结尾，然后记录下来多说前面的用户名，比如我的是http://mengxinagyue.duoshuo.com/admin/ ，然后我的用户名就是mengxiangyue。找到配置文件在对应的地方改成你自己的用户名   
-```
+```shell
 duoshuo_shortname: mengxinagyue  #修改成你自己的用户名
 ```
 到这里多说配置完了。
 #### 配置RSS
 执行如下命令：
-```
+```shell
 npm install hexo-generator-feed --save
 ```
 在博客的配置文件_config.yml中添加如下配置：
-```
+```shell
 Plugins:
   hexo-generator-feed
 
@@ -96,7 +98,7 @@ feed:
 执行如下命令：
 > 这里先去创建一篇测试文章，因为多说插件只有在文章中才能看到，怎么创建文章，这个去看官方文档吧。
 
-```
+```shell
 hexo generate  # 重新生成配置文件 保证我们的修改会生效
 hexo server
 ```
@@ -111,11 +113,11 @@ hexo server
 
 ### 5. 部署博客
 在命令行执行如下命令，安装hexo-deployer-git,这个主要适用于将博客部署到Github上的工具。
-```
+```shell
 npm install hexo-deployer-git --save
 ```
 在博客的配置文件_config.yml中添加如下配置：
-```
+```shell
 deploy:
   type: git
   repo: <你的博客的仓库地址，即查看仓库时候浏览器地址栏的地址>
@@ -123,7 +125,7 @@ deploy:
 最后执行如下命令：
 > 在部署的过程中可能会需要输入用户名密码，如果还是不行可能还需要配置SSH，因为我的电脑原来早就已经配置过了，所以这里不清楚。  
 
-```
+```shell
 hexo deploy
 ```
 最后出现部署成功的提示，这时候访问你的博客应该就能看到最新的了。
@@ -133,7 +135,9 @@ hexo deploy
 1 about路径不存在    
  jacman主题上菜单栏里面有一个about菜单项目，它指向的地址是about/目录，我们可以使用如下命令创建该目录，然后修改里面的index.md文件。     
 
-**hexo new page "about"**   
+ ```shell
+hexo new page "about"
+```
 
 2 图片路径的问题
 我们可以在source目录下创建一个images目录，然后在使用的时候，使用相对路径，例如：'![](/images/2015.12.19.05.png)'  
@@ -162,8 +166,24 @@ for (var i = 0; i < tocItemTextArray.length; i++) {
 5 回到顶部不显示   
 jacman主题默认是滚动距离超过1000才会显示回到顶部按钮，如果文章过短将永远不会显示，我这里改成了300，可以在themes/jacman/source/js/totop.js中修改如下属性为300：   
 
-```
+```shell
 var upperLimit = 300;
-```
+```   
 
-终于把这个写完了好费劲。如果有什么问题可以找我交流。
+6 首页不展开配置
+jacman提供在首页展开一部分文章，然后添加一个read more的提示。需要在jacman的配置文件中，找到如下配置，然后改成true，   
+
+```javascript
+index:
+  expand: true  
+  excerpt_link: Read More
+```        
+然后需要在写文章的时候，在需要在首页截断显示的地方添加"<!--more--\>"标签   
+
+7 写文章即使预览功能    
+在写文章的时候可能需要经常修改在浏览器预览效果这时候可以分别启用两个终端，然后分别执行如下的两条命令，这样就能够在修改后立即预览最新的 内容      
+
+>hexo generate --watch  #文件变动 立即重新生成
+>hexo server
+
+终于把这个写完了好费劲。如果有什么问题可以找我交流。PS: 不清楚为什么在添加代码片段的过程中，总是会出现错误。
