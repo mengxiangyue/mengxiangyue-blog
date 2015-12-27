@@ -19,9 +19,9 @@ Swift 2中加入了几个（作者认为）比较重要的改进，如下：
 * 其他一些。。。。。。
 
 ### 控制流   
-在书中首先作者解释了一下控制流，感觉不错：程序中任何能够影响程序执行到不同的路径的结构或者关键字都考研叫做控制流，原文：any construct or keyword that causes the execution of your program to follow a different path can be considered "control flow".   
+在书中首先作者解释了一下控制流，感觉不错：程序中任何能够影响程序执行到不同的路径的结构或者关键字都可以叫做控制流，原文：any construct or keyword that causes the execution of your program to follow a different path can be considered "control flow".   
 #### repeat...while
-repeat...whild是重复的意思，类似于其他语言中的do...while。其实在Swift 1.x中还是使用的do...while，在2.x中为了与do...catch区分，所以改成了repeat，但是语义上还是没有变化。这里多说一句，Swift的好多改进，都是为了让程序读上去更加明确，例如Optional、guard等也有这方面的考虑。   
+repeat...while是重复的意思，类似于其他语言中的do...while。其实在Swift 1.x中还是使用的do...while，在2.x中为了与do...catch区分，所以改成了repeat，但是语义上还是没有变化。这里多说一句，Swift的好多改进，都是为了让程序读上去更加明确，例如Optional、guard等也有这方面的考虑。   
 > 本例子中的代码都是在Playground中实现的    
 
 {% codeblock lang:swift %}  
