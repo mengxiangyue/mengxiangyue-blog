@@ -6,9 +6,11 @@ tags:
   - iOS 9
 ---
 
->这篇文章在书中的标题是App Thinning，这里我给翻译成了App 瘦身。   
+>这篇文章在书中的标题是App Thinning，这里我给翻译成了App 瘦身。
 
-iPhone经过这几年的发展，已经发生了很大的变化，例如屏幕变得更加多样，尺寸更多，内存变得更大，CPU的架构也在变化。伴随着iPhone的变化，iOS也在变化，例如AutoLayout、size classes、split view controller等。同样这些技术及设备的变化给我在开发的过程中也造成了许多的问题，但是苹果通过不断推出新的技术，努力在帮助我们使用同一套代码开发适应多个设备的Universal的App。但是Universal App虽然在开发的过程中，方便了我们开发人员，但是对于用户来说就不那么友好了，由于需要适配多种设备，所以里包含所有设备的代码，但是真正的在运行的时候，我们并不需要那么多相关的代码及资源。    
+>本文然然进行了一些语法的修改，很开心她为我修改这些东西。她说我转折只会用但是，被她这么一说想想还真是只是会用但是，嘿嘿。  
+
+iPhone经过这几年的发展，已经发生了很大的变化，例如屏幕变得更加多样，尺寸更多，内存变得更大，CPU的架构也在变化。伴随着iPhone的变化，iOS也在变化，例如AutoLayout、size classes、split view controller等。这些技术及设备的变化给我在开发的过程中也造成了许多的问题，不仅如此苹果通过不断推出新的技术，努力在帮助我们使用同一套代码开发适应多个设备的Universal的App。另一方面Universal App虽然在开发的过程中，方便了我们开发人员，可是对于用户来说就不那么友好了，由于需要适配多种设备，所以里包含所有设备的代码，但真正的在运行的时候，我们并不需要那么多相关的代码及资源。    
 
 例如下面的一张图，是一个App运行在iPhone 6+上，使用的各个资源相关的情况：
 ![](/images/2016.01.04.01.png)   
@@ -60,14 +62,14 @@ App slicing包含两部分内容：可执行文件分片（Executable slicing）
 默认情况下提交到App Store的包是包含所有的内容的，这些都在配置文件里面，App Store会自动创建对应于每个类型的可执行文件。这个在iOS9+上支持。
 
 #### Being smart with resources
-**Resource slicing** 需要我们一小部分简单的工作就能实现。如果使用Resource slicing，需要保证我们的资源都被Asset Catalogs管理。在Xcode 7中，能够标记资源被使用设备的 **Memory** 和 **Graphics** ，如下：
+**Resource slicing** 需要我们一小部分简单的工作就能实现。如果使用Resource slicing，则要保证我们的资源都被Asset Catalogs管理。在Xcode 7中，能够标记资源被使用设备的 **Memory** 和 **Graphics** ，如下：
 ![](/images/2016.01.04.07.png)
 
 ##### Your first fix
-在开始的时候介绍过Santa Cruz PNGs这个文件被放到Main bundle中，所以不能被编译进入到Assets.car，所以不能使用Resource slicing。下面看一下我们怎么修改，使其能够使用：
+在开始的时候介绍过Santa Cruz PNGs这个文件因为被放到Main bundle中，所以不能被编译进入到Assets.car，进而也不能使用Resource slicing。下面看一下我们怎么修改，使其能够使用：
 ![](/images/2016.01.04.08.png)
 
-选择New Image Set后，然后将新加入的set命名为Santa Cruz，然后做如下操作：
+选择New Image Set后，将新加入的set命名为Santa Cruz，紧接着做如下操作：
 ![](/images/2016.01.04.09.png)  
 > 纠正一下 上图左边的内容应该是删除，包括在Finder内也应该删除   
 
