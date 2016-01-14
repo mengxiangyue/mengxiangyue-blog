@@ -46,27 +46,66 @@ Auto Layout的改变主要是介绍layout anchors和layout guides。
   }
 {% endcodeblock %}    
 
-在Storyboard中的的控件都通过outlet与SpotInfoViewController.swift中对应的属性进行了关联。在storyboard中显示的名字对应SpotInfoViewController.swift对应的变量。
-{% codeblock lang:swift %}
-{% endcodeblock %} 
-{% codeblock lang:swift %}
-{% endcodeblock %} 
-{% codeblock lang:swift %}
-{% endcodeblock %} 
-{% codeblock lang:swift %}
-{% endcodeblock %} 
-{% codeblock lang:swift %}
-{% endcodeblock %} 
-{% codeblock lang:swift %}
-{% endcodeblock %} 
-{% codeblock lang:swift %}
-{% endcodeblock %} 
-{% codeblock lang:swift %}
-{% endcodeblock %} 
-{% codeblock lang:swift %}
-{% endcodeblock %} 
-{% codeblock lang:swift %}
-{% endcodeblock %} 
-{% codeblock lang:swift %}
-{% endcodeblock %} 
+在Storyboard中的的控件都通过outlet与SpotInfoViewController.swift中对应的属性进行了关联。在storyboard中显示的名字对应SpotInfoViewController.swift对应的变量。  
 
+#### Your first stack view
+我们先用Stack View解决我们问题列表中底部按钮的问题。使用UIStackView能够在一个坐标抽上分配位置和控件之间的空间。幸运的是将Views嵌入到UIStackView中并没有太难。在Storyboard中的Spot Info View Controller选择如下三个按钮控件：
+![](/images/2016.01.13/05.png)
+
+选择好三个按钮后，在Storyboard中点击如下的按钮：
+![](/images/2016.01.13/06.png)
+
+当Views被嵌入UIStackView之后，Views的约束都被移除了，同时需要设置UIStackView的约束。选中UIStackView，然后按照如图添加约束：
+![](/images/2016.01.13/07.png)
+
+>这里有个选择UIStackView的技巧，由于UIStackView是在按钮的后面，很不好选中，我们可以按住Shift，右击，在出现的菜单中列出来当前点击位置所有的View，我们可以选择UIstackView。另一种方法我们可以在outline view中选择。   
+
+设置好约束后，能够看到按钮显示如下，第一个按钮被拉伸了，填充满了UIStackView的剩余空间。UIstackView有一个Distribution属性，用于控制Views怎么在UIStackView中显示，现在设置的是Fill，即将会填充满UIStackView。为了这个目的，UIstackView将会根据View的ccontent hugging优先级去拉伸View，最低的将会被拉伸。如果优先级一样，将会拉伸第一个。
+![](/images/2016.01.13/08.png)  
+
+我们的目的是让View间的距离相等，在Attributes inspector中修改Distribution为Equal Spacing。
+![](/images/2016.01.13/09.png)
+
+运行APP，能够看到我们的按钮显示正确了：
+![](/images/2016.01.13/10.png)  
+
+#### 一些思考
+思考一下你使用Auto Layout，通过约束实现上面的要求，那将是一种什么令人"愉悦"的行为。可能你很熟悉Auto Layout，认为这些东西都很简单，那么你在考虑一下如果我们后面有需求添加一个按钮，删除一个按钮呢，怎么办呢？约束删除了重新添加吗？如果使用UIStackView，这些将变得比较简单，只要我们添加或者删除View，其他的工作UIstackView就会帮我们做了。    
+
+UISTackView的更加深入的讲解，将会在下一篇文章中继续介绍。这里先介绍一下Auto Layout的新特性：layout anchors和layout guides。
+
+### Layout anchors
+Layout anchors提供了我们一种简单的创建约束的方式。  
+
+想象一下我们在iOS 9之前创建一个约束，简直就是天书，但是在iOS 9中使用Layout anchors将会简单好多，下面是两种的对比：
+{% codeblock lang:swift %}
+// iOS9以前
+let constraint = NSLayoutConstraint(item: topLabel, attribute: .Bottom, relatedBy: .Equal, toItem: bottomLabel, attribute: .Top, multiplier: 1, constant: 8)
+
+// iOS 9
+let constraint = topLabel.bottomAnchor.constraintEqualToAnchor(bottomLabel.topAnchor, constant: 8)
+{% endcodeblock %}   
+
+Layout anchors不仅理解起来简单，而且写起来也简单了。   
+
+对应于我们在iOS 9以前添加约束时候的attribute，基本都有与之对应的anchor，例如top对应topAnchor，bottom对应bottomAnchor等。
+{% codeblock lang:swift %}
+{% endcodeblock %}
+{% codeblock lang:swift %}
+{% endcodeblock %}
+{% codeblock lang:swift %}
+{% endcodeblock %}
+{% codeblock lang:swift %}
+{% endcodeblock %}
+{% codeblock lang:swift %}
+{% endcodeblock %}
+{% codeblock lang:swift %}
+{% endcodeblock %}
+{% codeblock lang:swift %}
+{% endcodeblock %}
+{% codeblock lang:swift %}
+{% endcodeblock %}
+{% codeblock lang:swift %}
+{% endcodeblock %}
+{% codeblock lang:swift %}
+{% endcodeblock %}
