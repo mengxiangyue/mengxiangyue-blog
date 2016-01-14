@@ -16,4 +16,57 @@ Auto Layout的改变主要是介绍layout anchors和layout guides。
 
 <!---more--->
 
-### Getting Started
+### Getting Started   
+打开本章的配套的工程VacationSpots，在iPhone 6模拟器上运行，能够看到APP有一些UI的问题，不要担心，在后面将会修复这些问题。简单梳理一下问题如下：
+1. 图中标出的内容没有在垂直方向居中
+![](/images/2016.01.13/01.png)  
+
+2. 点击列表中的London Cell进入详情页面，最下面的三个按钮没有平均分配空间：
+![](/images/2016.01.13/02.png)  
+
+3. 点击WEATHER旁边的hide按钮，内容是被隐藏了，但是留下了一块空白，下面的内容没有移动上来：
+![](/images/2016.01.13/03.png)    
+
+4. WHAT TO SEE 部分在WHY VISIT的下面会更加合理一点。  
+
+现在已经了解了这些问题，下面开始用UIStackView来修改这些问题。打开Main.storyboard，查看如下的Controller scene：
+![](/images/2016.01.13/04.png)    
+>能够注意到上面的每个对应的控件都有背景颜色，这个只是为了帮助我们查看这些属性的变化。这些背景颜色在运行的时候都会被去掉，通过如下代码，如果你想让它们在运行的时候也显示注释掉这些代码就可以：
+{% codeblock lang:swift %}
+// SpotInfoViewController.swift
+ override func viewDidLoad() {
+    super.viewDidLoad()
+
+    // Clear background colors from labels and buttons
+    for view in backgroundColoredViews {
+      view.backgroundColor = UIColor.clearColor()
+    }
+
+    ........
+  }
+{% endcodeblock %}    
+
+在Storyboard中的的控件都通过outlet与SpotInfoViewController.swift中对应的属性进行了关联。在storyboard中显示的名字对应SpotInfoViewController.swift对应的变量。
+{% codeblock lang:swift %}
+{% endcodeblock %} 
+{% codeblock lang:swift %}
+{% endcodeblock %} 
+{% codeblock lang:swift %}
+{% endcodeblock %} 
+{% codeblock lang:swift %}
+{% endcodeblock %} 
+{% codeblock lang:swift %}
+{% endcodeblock %} 
+{% codeblock lang:swift %}
+{% endcodeblock %} 
+{% codeblock lang:swift %}
+{% endcodeblock %} 
+{% codeblock lang:swift %}
+{% endcodeblock %} 
+{% codeblock lang:swift %}
+{% endcodeblock %} 
+{% codeblock lang:swift %}
+{% endcodeblock %} 
+{% codeblock lang:swift %}
+{% endcodeblock %} 
+
