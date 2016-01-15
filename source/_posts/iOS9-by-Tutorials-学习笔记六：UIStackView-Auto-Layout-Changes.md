@@ -88,24 +88,157 @@ let constraint = topLabel.bottomAnchor.constraintEqualToAnchor(bottomLabel.topAn
 
 Layout anchors不仅理解起来简单，而且写起来也简单了。   
 
-对应于我们在iOS 9以前添加约束时候的attribute，基本都有与之对应的anchor，例如top对应topAnchor，bottom对应bottomAnchor等。
+对应于我们在iOS 9以前添加约束时候的attribute，基本都有与之对应的anchor，例如top对应topAnchor，bottom对应bottomAnchor等。Layout Anchor都是直接或者间接继承自NSLayoutAnchor，上面只是演示了一下相等的情况，我们都知道在约束中又大于小于等，下面列出NSLayoutAnchor的接口文件，从接口文件中能够清楚的了解到对应的方法：
 {% codeblock lang:swift %}
-{% endcodeblock %}
+import Foundation
+import UIKit
+
+/*	NSLayoutAnchor.h
+	Copyright (c) 2015, Apple Inc. All rights reserved.
+*/
+
+/* An NSLayoutAnchor represents an edge or dimension of a layout item.  Its concrete 
+ subclasses allow concise creation of constraints.  
+    Instead of invoking 
+ 
+ +[NSLayoutConstraint constraintWithItem:attribute:relatedBy:toItem:attribute:multiplier:constant:] 
+ 
+ directly, you can instead do something like this:
+ 
+ [myView.topAnchor constraintEqualToAnchor:otherView.topAnchor constant:10];
+ 
+ The -constraint* methods are available in multiple flavors to support use of different
+ relations and omission of unused options.
+ */
+
+@available(iOS 9.0, *)
+public class NSLayoutAnchor : NSObject {
+    
+    /* These methods return an inactive constraint of the form thisAnchor = otherAnchor.
+     */
+    public func constraintEqualToAnchor(anchor: NSLayoutAnchor!) -> NSLayoutConstraint!
+    public func constraintGreaterThanOrEqualToAnchor(anchor: NSLayoutAnchor!) -> NSLayoutConstraint!
+    public func constraintLessThanOrEqualToAnchor(anchor: NSLayoutAnchor!) -> NSLayoutConstraint!
+    
+    /* These methods return an inactive constraint of the form thisAnchor = otherAnchor + constant.
+     */
+    public func constraintEqualToAnchor(anchor: NSLayoutAnchor!, constant c: CGFloat) -> NSLayoutConstraint!
+    public func constraintGreaterThanOrEqualToAnchor(anchor: NSLayoutAnchor!, constant c: CGFloat) -> NSLayoutConstraint!
+    public func constraintLessThanOrEqualToAnchor(anchor: NSLayoutAnchor!, constant c: CGFloat) -> NSLayoutConstraint!
+}
+
+/* Axis-specific subclasses for location anchors: top/bottom, leading/trailing, baseline, etc.
+ */
+
+@available(iOS 9.0, *)
+public class NSLayoutXAxisAnchor : NSLayoutAnchor {
+}
+
+@available(iOS 9.0, *)
+public class NSLayoutYAxisAnchor : NSLayoutAnchor {
+}
+
+/* This layout anchor subclass is used for sizes (width & height).
+ */
+
+@available(iOS 9.0, *)
+public class NSLayoutDimension : NSLayoutAnchor {
+    
+    /* These methods return an inactive constraint of the form 
+        thisVariable = constant.
+    */
+    public func constraintEqualToConstant(c: CGFloat) -> NSLayoutConstraint!
+    public func constraintGreaterThanOrEqualToConstant(c: CGFloat) -> NSLayoutConstraint!
+    public func constraintLessThanOrEqualToConstant(c: CGFloat) -> NSLayoutConstraint!
+    
+    /* These methods return an inactive constraint of the form 
+        thisAnchor = otherAnchor * multiplier.
+    */
+    public func constraintEqualToAnchor(anchor: NSLayoutDimension!, multiplier m: CGFloat) -> NSLayoutConstraint!
+    public func constraintGreaterThanOrEqualToAnchor(anchor: NSLayoutDimension!, multiplier m: CGFloat) -> NSLayoutConstraint!
+    public func constraintLessThanOrEqualToAnchor(anchor: NSLayoutDimension!, multiplier m: CGFloat) -> NSLayoutConstraint!
+    
+    /* These methods return an inactive constraint of the form 
+        thisAnchor = otherAnchor * multiplier + constant.
+    */
+    public func constraintEqualToAnchor(anchor: NSLayoutDimension!, multiplier m: CGFloat, constant c: CGFloat) -> NSLayoutConstraint!
+    public func constraintGreaterThanOrEqualToAnchor(anchor: NSLayoutDimension!, multiplier m: CGFloat, constant c: CGFloat) -> NSLayoutConstraint!
+    public func constraintLessThanOrEqualToAnchor(anchor: NSLayoutDimension!, multiplier m: CGFloat, constant c: CGFloat) -> NSLayoutConstraint!
+}
+{% endcodeblock %}   
+
+在上面的接口文件中，我们能够清楚的了解到NSLayoutAnchor有三个子类：NSLayoutXAxisAnchor，NSLayoutYAxisAnchor，NSLayoutDimension。下面列出了UIView的Anchor都是对应的那种类型：
 {% codeblock lang:swift %}
-{% endcodeblock %}
+extension UIView {
+    /* Constraint creation conveniences. See NSLayoutAnchor.h for details.
+     */
+    @available(iOS 9.0, *)
+    public var leadingAnchor: NSLayoutXAxisAnchor { get }
+    @available(iOS 9.0, *)
+    public var trailingAnchor: NSLayoutXAxisAnchor { get }
+    @available(iOS 9.0, *)
+    public var leftAnchor: NSLayoutXAxisAnchor { get }
+    @available(iOS 9.0, *)
+    public var rightAnchor: NSLayoutXAxisAnchor { get }
+	@available(iOS 9.0, *)
+    public var centerXAnchor: NSLayoutXAxisAnchor { get }
+
+    @available(iOS 9.0, *)
+    public var topAnchor: NSLayoutYAxisAnchor { get }
+    @available(iOS 9.0, *)
+    public var bottomAnchor: NSLayoutYAxisAnchor { get }
+    @available(iOS 9.0, *)
+    public var firstBaselineAnchor: NSLayoutYAxisAnchor { get }
+    @available(iOS 9.0, *)
+    public var lastBaselineAnchor: NSLayoutYAxisAnchor { get }
+    @available(iOS 9.0, *)
+    public var centerYAnchor: NSLayoutYAxisAnchor { get }
+
+    @available(iOS 9.0, *)
+    public var widthAnchor: NSLayoutDimension { get }
+    @available(iOS 9.0, *)
+    public var heightAnchor: NSLayoutDimension { get }
+}
+{% endcodeblock %}   
+
+上面UIView的Anchor属性被分成了三类，同样我们在设置属性的时候，也要求同类的属性的才能设置，比如ViewA和ViewB之间的约束，ViewA-topAnchor和ViewB-bottomAnchor是可以的，ViewA-topAnchor和ViewB-leftAnchor就是不允许的，如果这样的话编译器会警告，运行时也会报错。
+> 注意： whyVisitLabel.topAnchor.constraintEqualToAnchor(whatToSeeLabel.leftAnchor) 这个按照上面的说法应该会报错的，但是我在运行的时候也没有报错，可能是我这里只是随便写出一个做测试的原因，后续我会继续试验一下这个知识点，然后再改正。   
+
+### Layout guides
+有时候我们想设置两个View之间的空间，需要在两个View之间添加一个不可见的View（dummy view），然后在设置约束。Layout guide可以理解为一个隐形的不可见View，我们能够使用它的矩形边缘来布局，我们可以像我们使用View一样设置约束。使用Layout guide的好处是轻量，而且不会在view的层级中，也不会参与事件的响应过程。layout guide也包含除了firstBaselineAnchor和lastBaselineAnchor之外的View所有的Anchor。 
+
+#### Fixing the alignment bug
+下面就利用layout guide来修复列表页面文字内容上下不居中的问题。看下图是我们设置的约束，我们设置label距离上面的距离是15，当下面的label显示一行的时候是正常的，如果要是两行了，由于上面的约束是固定的，最终就变成了不居中的效果了。
+![](/images/2016.01.13/11.png)   
+
+在iOS 9之前，我们想解决这个问题可以把两个label放置到一个container view容器中，设置这个container view为剧中，这里面的container view就是不可见的view即dummy view。现在在iOS 9上我们可以使用layout guide来代替这个view。   
+
+目前只能通过代码来添加layout guide。打开VacationSpotCell.swift文件，修改对应代码：
 {% codeblock lang:swift %}
+override func awakeFromNib() {
+    super.awakeFromNib()
+
+    // TODO: Add layoutGuide code here to center the name and locationName labels vertically
+    
+    // 创建layou guide
+    let layoutGuide = UILayoutGuide()
+    contentView.addLayoutGuide(layoutGuide)
+    
+    // 设置layout guide的约束
+    let topConstraint = layoutGuide.topAnchor.constraintEqualToAnchor(nameLabel.topAnchor)
+    let bottomConstraint = layoutGuide.bottomAnchor.constraintEqualToAnchor(locationNameLabel.bottomAnchor)
+    let centerConstraint = layoutGuide.centerYAnchor.constraintEqualToAnchor(contentView.centerYAnchor)
+    
+    // 激活layout guide的约束
+    NSLayoutConstraint.activateConstraints([topConstraint, bottomConstraint, centerConstraint])
+  }
 {% endcodeblock %}
-{% codeblock lang:swift %}
-{% endcodeblock %}
-{% codeblock lang:swift %}
-{% endcodeblock %}
-{% codeblock lang:swift %}
-{% endcodeblock %}
-{% codeblock lang:swift %}
-{% endcodeblock %}
-{% codeblock lang:swift %}
-{% endcodeblock %}
-{% codeblock lang:swift %}
-{% endcodeblock %}
-{% codeblock lang:swift %}
-{% endcodeblock %}
+
+运行APP发现，部分文字被截断了：
+![](/images/2016.01.13/12.png) 
+
+#### 处理截断问题
+这个原因是我们设置layout guide居中，但是nameLabel(上面的)与super view top的约束还存在，造成了下面的label被挤压了，这时候我们只要删除掉这个约束就可以了。但是删除了之后storyboard会提示错误，这时候我们可以使用占位约束，这个主要是为了使storyboard不报错，在运行的时候并不会使用。
+![](/images/2016.01.13/13.png) 
+
+最近一直在加班，断断续续整理了好久终于整理完了这篇文章了，可能会有错误，还请大家指出。
